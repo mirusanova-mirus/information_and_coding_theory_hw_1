@@ -7,7 +7,7 @@ import unittest
 from fractions import Fraction
 from pathlib import Path
 
-from main import parse_distribution, parse_source
+from source import parse_distribution, parse_source
 
 
 class SourceTests(unittest.TestCase):

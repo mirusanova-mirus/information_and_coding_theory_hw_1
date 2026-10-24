@@ -11,7 +11,7 @@ from fractions import Fraction as F
 from itertools import islice
 from pathlib import Path
 
-from main import estimate, load_source, parse_source
+from source import estimate, load_source, parse_source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -69,7 +69,7 @@ class SimulationTests(unittest.TestCase):
     def test_frequency_matches_generated_prefix(self):
         # Сравниваем вывод командной строки с ручным подсчётом по той же реализации
         source = load_source(ROOT / "examples/source14.json")
-        result = subprocess.run([sys.executable, "main.py", "estimate", "examples/source14.json",
+        result = subprocess.run([sys.executable, "source.py", "estimate", "examples/source14.json",
                                  "--N", "100", "--word", "examples/word.json", "--seed", "14"],
                                 cwd=ROOT, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -107,7 +107,7 @@ class SimulationTests(unittest.TestCase):
         for args in [("generate", "tests/invalid.json"), ("generate", "missing.json"),
                      ("generate", "examples/source14.json", "--N", "abc"),
                      ("estimate", "examples/source14.json", "--N", "1", "--word", "examples/word.json")]:
-            result = subprocess.run([sys.executable, "main.py", *args], cwd=ROOT, capture_output=True)
+            result = subprocess.run([sys.executable, "source.py", *args], cwd=ROOT, capture_output=True)
             self.assertNotEqual(result.returncode, 0)
             self.assertNotIn(b"Traceback", result.stderr)
 
@@ -116,7 +116,7 @@ class SimulationTests(unittest.TestCase):
         # Проверяем бесконечную генерацию при None, нуле и отрицательном N
         for n in ("None", "0", "-1"):
             with self.subTest(N=n):
-                process = subprocess.Popen([sys.executable, "main.py", "generate", "tests/constant.json", "--N", n],
+                process = subprocess.Popen([sys.executable, "source.py", "generate", "tests/constant.json", "--N", n],
                                            cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 # Ждём первый символ, чтобы прервать уже работающую генерацию
                 self.assertTrue(process.stdout.readline())
