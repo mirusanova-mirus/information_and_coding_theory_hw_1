@@ -1,5 +1,7 @@
 # Задачи 1.1 и 1.2, вариант 14
 
+## Задача 1.1
+
 ```sh
 python3.11 source.py --variant
 python3.11 source.py generate examples/source14.json --N 20 --seed 14
