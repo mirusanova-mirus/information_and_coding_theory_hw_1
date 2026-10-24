@@ -1,8 +1,12 @@
-Вариант 14
+# Результаты, вариант 14
 
-# Результаты задачи 1.1
+[Главная](README.md) · [Отчёт](REPORT.md) · [Формат источника](FORMAT.md)
 
-Python 3.11.14, seed=14
+Python **3.11.14** · **seed=14**
+
+## Задача 1.1
+
+### Параметры варианта
 
 ```text
 python3.11 source.py --variant
@@ -10,7 +14,10 @@ python3.11 source.py --variant
 s=14, k=3, M=4, L=7, d=3, q=5, epsilon=1/10000
 ```
 
-## Генерация
+### Генерация
+
+<details>
+<summary>source14.json, N=10, seed=14</summary>
 
 ```text
 python3.11 source.py generate examples/source14.json --N 10 --seed 14
@@ -27,6 +34,11 @@ python3.11 source.py generate examples/source14.json --N 10 --seed 14
 "B"
 ```
 
+</details>
+
+<details>
+<summary>markov14.json, N=10, seed=14</summary>
+
 ```text
 python3.11 source.py generate examples/markov14.json --N 10 --seed 14
 Код завершения: 0
@@ -42,6 +54,11 @@ python3.11 source.py generate examples/markov14.json --N 10 --seed 14
 "C"
 ```
 
+</details>
+
+<details>
+<summary>constant.json, N=5</summary>
+
 ```text
 python3.11 source.py generate tests/constant.json --N 5 --seed 14
 Код завершения: 0
@@ -52,7 +69,12 @@ python3.11 source.py generate tests/constant.json --N 5 --seed 14
 "A"
 ```
 
-## Вероятности и частота
+</details>
+
+### Вероятности и частота
+
+<details>
+<summary>Полный вывод estimate для source14.json, N=1000000</summary>
 
 ```text
 python3.11 source.py estimate examples/source14.json --N 1000000 --word examples/word.json --seed 14
@@ -97,18 +119,23 @@ python3.11 source.py estimate examples/source14.json --N 1000000 --word examples
 }
 ```
 
+</details>
+
 Дополнительные запуски `estimate` с `--word examples/word.json --seed 14`
 
-| Файл | N | first | average | frequency |
-| --- | --- | --- | --- | --- |
+| Файл | `N` | `first` | `average` | `frequency` |
+| --- | ---: | ---: | ---: | ---: |
 | examples/iid14.json | 1000000 | 1/6 | 1/6 | 167473/999999 |
 | examples/markov14.json | 1000000 | 1/9 | 1/9 | 111392/999999 |
 | examples/nonergodic14.json | 1000000 | 1/9 | 1/9 | 167473/999999 |
 | tests/constant.json | 1000 | 0 | 0 | 0 |
 
-Для блока `tests/unknown_word.json` на `examples/source14.json` при N=100: `first=0`, `average=0`, `frequency=0`, код завершения 0
+Для блока `tests/unknown_word.json` на `examples/source14.json` при `N=100`: `first=0`, `average=0`, `frequency=0`, код завершения 0
 
-## Некорректные входы
+### Некорректные входы
+
+<details>
+<summary>Диагностика некорректных входов, код завершения 1</summary>
 
 ```text
 python3.11 source.py generate tests/invalid.json --N 1
@@ -131,7 +158,11 @@ python3.11 source.py estimate examples/source14.json --N 100 --word tests/empty_
 Ошибка: Блок должен быть непустым JSON-массивом строк
 ```
 
-# Задача 1.2
+</details>
+
+## Задача 1.2
+
+### Энтропия
 
 ```text
 python3.11 coding.py entropy examples/iid14.json
@@ -145,14 +176,24 @@ python3.11 coding.py entropy examples/iid14.json
 }
 ```
 
+### Построение кода
+
 ```sh
 python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 ```
 
-`H=1.459147917027`, `minimum_n=16`, `eventual=true`, `seconds=0.014161`
+| Поле | Значение |
+| --- | ---: |
+| `H` | 1.459147917027 |
+| `minimum_n` | 16 |
+| `eventual` | true |
+| `seconds` | 0.014161 |
 
-| n | length | error |
-| --- | --- | --- |
+<details>
+<summary>Точные значения Pe(n) для n=1..50</summary>
+
+| `n` | `length` | `error` |
+| ---: | ---: | ---: |
 | 1 | 0 | 1/2 |
 | 2 | 1 | 2/9 |
 | 3 | 2 | 1/72 |
@@ -204,12 +245,14 @@ python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 | 49 | 33 | 13547992111733977041552320337389251/11226128853677278620043605561896337408 |
 | 50 | 34 | 6139366574844367851422598386649889/202070319366191015160784900114134073344 |
 
-## Дополнительные входы
+</details>
 
-В таблице результат `code` с q=5, epsilon=1/10000, Pe округлена до девяти знаков
+### Дополнительные входы
 
-| Файл | R | nmax | minimum_n | eventual | Pe(nmax) |
-| --- | --- | --- | --- | --- | --- |
+В таблице результат `code` с `q=5`, `epsilon=1/10000`, вероятность $P_e$ округлена до девяти знаков
+
+| Файл | $R$ | `nmax` | `minimum_n` | `eventual` | $P_e(n_{\max})$ |
+| --- | --- | ---: | ---: | ---: | ---: |
 | examples/iid14.json | 1 | 50 | null | false | 0.999599432 |
 | tests/concentrated14.json | 0 | 5 | 1 | false | 0.000499900 |
 | tests/constant.json | 0 | 50 | 1 | true | 0.000000000 |
@@ -221,17 +264,17 @@ python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 
 Для `tests/iid5.json` поле `seconds=1.904446`, время с запуском процесса 1.929272 с
 
-## Некорректные входы задачи 1.2
+### Некорректные входы
 
 Ожидаемые диагностические сообщения, код завершения 1
 
 | Аргументы coding.py | Диагностика |
 | --- | --- |
-| `entropy examples/source14.json` | Ошибка: Источник нестационарен |
-| `entropy examples/markov14.json` | Ошибка: Источник имеет память |
-| `entropy examples/nonergodic14.json` | Ошибка: Источник имеет память |
-| `entropy tests/invalid.json` | Ошибка: model_1: нужны неотрицательные вероятности с суммой 1 |
-| `code examples/iid14.json --R 1 --q 1` | Ошибка: Нужны R >= 0, 0 < epsilon < 1, q >= 2 и nmax >= 1 |
+| `entropy examples/source14.json` | `Ошибка: Источник нестационарен` |
+| `entropy examples/markov14.json` | `Ошибка: Источник имеет память` |
+| `entropy examples/nonergodic14.json` | `Ошибка: Источник имеет память` |
+| `entropy tests/invalid.json` | `Ошибка: model_1: нужны неотрицательные вероятности с суммой 1` |
+| `code examples/iid14.json --R 1 --q 1` | `Ошибка: Нужны R >= 0, 0 < epsilon < 1, q >= 2 и nmax >= 1` |
 
 ## Автотесты
 
