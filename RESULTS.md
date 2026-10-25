@@ -127,10 +127,10 @@ python3.11 source.py estimate examples/source14.json --N 1000000 --word examples
 
 | Файл | `N` | `first` | `average` | `frequency` |
 | --- | ---: | ---: | ---: | ---: |
-| examples/iid14.json | 1000000 | 1/6 | 1/6 | 167473/999999 |
-| examples/markov14.json | 1000000 | 1/9 | 1/9 | 111392/999999 |
-| examples/nonergodic14.json | 1000000 | 1/9 | 1/9 | 167473/999999 |
-| tests/constant.json | 1000 | 0 | 0 | 0 |
+| [iid14.json](examples/iid14.json) | 1000000 | 1/6 | 1/6 | 167473/999999 |
+| [markov14.json](examples/markov14.json) | 1000000 | 1/9 | 1/9 | 111392/999999 |
+| [nonergodic14.json](examples/nonergodic14.json) | 1000000 | 1/9 | 1/9 | 167473/999999 |
+| [constant.json](tests/constant.json) | 1000 | 0 | 0 | 0 |
 
 Для блока `tests/unknown_word.json` на `examples/source14.json` при `N=100`: `first=0`, `average=0`, `frequency=0`, код завершения 0
 
@@ -254,13 +254,13 @@ python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 В таблице результат `code` с `q=5`, `epsilon=1/10000`, вероятность $P_e$ округлена до девяти знаков
 
 | Файл | $R$ | `nmax` | `minimum_n` | `eventual` | $P_e(n_{\max})$ |
-| --- | --- | ---: | ---: | ---: | ---: |
-| examples/iid14.json | 1 | 50 | null | false | 0.999599432 |
-| tests/concentrated14.json | 0 | 5 | 1 | false | 0.000499900 |
-| tests/constant.json | 0 | 50 | 1 | true | 0.000000000 |
-| tests/iid5.json | 1.7 | 50 | null | false | 0.999194323 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| [iid14.json](examples/iid14.json) | 1 | 50 | null | false | 0.999599432 |
+| [concentrated14.json](tests/concentrated14.json) | 0 | 5 | 1 | false | 0.000499900 |
+| [constant.json](tests/constant.json) | 0 | 50 | 1 | true | 0.000000000 |
+| [iid5.json](tests/iid5.json) | 1.7 | 50 | null | false | 0.999194323 |
 
-`minimum_n=null` означает отсутствие подходящего n на проверенном отрезке
+`minimum_n=null` означает отсутствие подходящего $n$ на проверенном отрезке
 
 Для `tests/constant.json` режим `entropy` вывел `H=0.000000000000`
 
