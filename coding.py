@@ -26,14 +26,14 @@ def zero_continuations(source, pending):
         vector = {s: p for s, p in vector.items() if p}
         if not vector:
             continue
-        # Обнаружение различия вероятностей по ненулевой сумме весов
+        # Сумма координат как разность вероятностей уже прочитанного слова
         if sum(vector.values()):
             return False
         # Нормировка нового базисного вектора по первой ненулевой координате
         pivot = min(vector)
         vector = {s: p / vector[pivot] for s, p in vector.items()}
         basis.append((pivot, vector))
-        # Добавление продолжений на один символ к списку проверок
+        # Проверка всех следующих символов только для нового независимого направления
         pending.extend(source.step(vector, a) for a in source.alphabet)
     return True
 
@@ -92,6 +92,9 @@ def error_table(probabilities, rate, q, nmax):
     powers = [[w ** n for n in range(nmax + 1)] for w in weights]
     k, rows = len(weights), []
     uniform = len(set(weights)) == 1
+    # Число битов в одном q-ичном разряде, общее для всех длин блока
+    power_of_two = q & (q - 1) == 0
+    bits_per_digit = q.bit_length() - 1 if power_of_two else Decimal(q).ln() / Decimal(2).ln()
 
     def types(left, i=0, word_weight=1, type_size=1, counts=()):
         # Перебор типов: вес одного слова, число слов типа и вектор количеств символов
@@ -102,14 +105,16 @@ def error_table(probabilities, rate, q, nmax):
         else:
             for c in range(left + 1):
                 # Выбор c позиций очередного символа из left свободных позиций
-                yield from types(left - c, i + 1, word_weight * powers[i][c], type_size * math.comb(left, c), counts + (c,))
+                next_weight = word_weight * powers[i][c]
+                next_size = type_size * math.comb(left, c)
+                yield from types(left - c, i + 1, next_weight, next_size, counts + (c,))
 
     for n in range(1, nmax + 1):
         # Вычисление floor(n*R/log2(q)) с точным делением при q=2^m
-        if q & (q - 1) == 0:
-            length = n * rate // (q.bit_length() - 1)
+        if power_of_two:
+            length = n * rate // bits_per_digit
         else:
-            length = int(decimal(n * rate) * Decimal(2).ln() / Decimal(q).ln())
+            length = int(decimal(n * rate) / bits_per_digit)
         # Ограничение ёмкости числом k^n исходных блоков
         total_blocks = k ** n
         # Предотвращение огромной степени при заведомо достаточной длине, поскольку q >= 2

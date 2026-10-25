@@ -31,15 +31,18 @@ def parse_distribution(data, name, allowed=None):
         raise ValueError(f"{name}: неизвестные имена {sorted(result.keys() - allowed.keys())}")
     return result
 
-def draw(probabilities, rng):
-    # Приведение вероятностей к общему знаменателю для целочисленной выборки
+def sampling_table(probabilities):
+    # Однократное приведение вероятностей к целым весам в фиксированном порядке
     denominator = math.lcm(*(p.denominator for p in probabilities.values()))
+    return denominator, [(value, int(p * denominator)) for value, p in sorted(probabilities.items())]
+
+def draw(table, rng):
+    denominator, outcomes = table
     # Равномерный выбор целого числа от 0 до denominator-1
     number = rng.randrange(denominator)
-    # Фиксация порядка исходов для воспроизводимости при одинаковом seed
-    for value, p in sorted(probabilities.items()):
+    for value, weight in outcomes:
         # Поиск интервала исхода последовательным вычитанием его целого веса
-        number -= p.numerator * (denominator // p.denominator)
+        number -= weight
         if number < 0:
             return value
 
@@ -61,11 +64,13 @@ class Source:
     # Генерация символов источника с воспроизводимой случайностью
     def generate(self, seed=14):
         rng = random.Random(seed)
+        # Подготовка таблиц один раз на реализацию, без пересчёта при каждом символе
+        tables = {state: sampling_table(edges) for state, edges in self.edges.items()}
         # Однократный выбор начального состояния
-        state = draw(self.initial, rng)
+        state = draw(sampling_table(self.initial), rng)
         while True:
             # Выбор перехода по его вероятности и выдача символа
-            _, symbol, state = draw(self.edges[state], rng)
+            _, symbol, state = draw(tables[state], rng)
             yield symbol
 
     def step(self, distribution, symbol=None):

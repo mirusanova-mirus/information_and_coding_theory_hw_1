@@ -2,6 +2,8 @@
 
 [Главная](README.md) · [Отчёт](REPORT.md) · [Формат источника](FORMAT.md)
 
+[Задача 1.1](#задача-11) · [Задача 1.2](#задача-12) · [Задача 1.3](#задача-13) · [Автотесты](#автотесты)
+
 Python **3.11.14** · **seed=14**
 
 ## Задача 1.1
@@ -187,7 +189,7 @@ python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 | `H` | 1.459147917027 |
 | `minimum_n` | 16 |
 | `eventual` | true |
-| `seconds` | 0.014161 |
+| `seconds` | 0.009713 |
 
 <details>
 <summary>Точные значения Pe(n) для n=1..50</summary>
@@ -262,7 +264,7 @@ python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 
 Для `tests/constant.json` режим `entropy` вывел `H=0.000000000000`
 
-Для `tests/iid5.json` поле `seconds=1.904446`, время с запуском процесса 1.929272 с
+Для `tests/iid5.json` поле `seconds=2.063460`, время с запуском процесса 2.092068 с
 
 ### Некорректные входы
 
@@ -276,10 +278,65 @@ python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 | `entropy tests/invalid.json` | `Ошибка: model_1: нужны неотрицательные вероятности с суммой 1` |
 | `code examples/iid14.json --R 1 --q 1` | `Ошибка: Нужны R >= 0, 0 < epsilon < 1, q >= 2 и nmax >= 1` |
 
+## Задача 1.3
+
+### Сжатие со статистикой
+
+```text
+python3.11 huffman.py compress examples/files/russian.txt --stats
+Код завершения: 0
+{
+  "output": "examples/files/russian.txt.zmh",
+  "H": 3.901366875,
+  "average_length": 3.941297631,
+  "header_bytes": 136,
+  "data_bytes": 957,
+  "input_bytes": 1942,
+  "archive_bytes": 1093,
+  "ratio": 1.776761208
+}
+```
+
+### Восстановление
+
+```text
+python3.11 huffman.py decompress examples/files/russian.txt.zmh --output russian.restored
+Код завершения: 0
+{
+  "output": "russian.restored"
+}
+```
+
+Восстановленный файл побайтово совпал с `examples/files/russian.txt`
+
+### Пять типов файлов
+
+Статистика режима `compress --stats`, значения округлены до шести знаков
+
+| Файл | Исходный, байт | $H$ | $\bar{\ell}$ | Заголовок, байт | Данные, байт | $K$ |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| [Русский текст](examples/files/russian.txt) | 1942 | 3.901367 | 3.941298 | 136 | 957 | 1.776761 |
+| [Английский текст](examples/files/english.txt) | 1076 | 4.238289 | 4.264870 | 96 | 574 | 1.605970 |
+| [PNG](examples/files/image.png) | 12420 | 7.980646 | 7.994686 | 538 | 12412 | 0.959073 |
+| [Повторяющийся байт](examples/files/repeat.bin) | 4096 | 0.000000 | 0.000000 | 28 | 0 | 146.285714 |
+| [Пустой файл](examples/files/empty.bin) | 0 | 0.000000 | 0.000000 | 26 | 0 | 0.000000 |
+
+Все пять архивов восстановлены с побайтовым совпадением исходных файлов. Для PNG размер архива равен 12950 байтам, для пустого файла 26 байтам
+
+### Некорректные входы
+
+Проверены PNG вместо архива, удаление последнего байта архива и инверсия бита в середине потока кодов
+
+| Проверка | Код завершения | Диагностика |
+| --- | ---: | --- |
+| Чужой формат | 1 | `Ошибка: Чужой формат: нет сигнатуры ZMH1` |
+| Обрезанный файл | 1 | `Ошибка: Обрезанный файл: недостаточно данных` |
+| Повреждённый файл | 1 | `Ошибка: Повреждённый файл: не совпали длина или CRC32` |
+
 ## Автотесты
 
 ```text
 python3.11 -m unittest discover -s tests -v
-Ran 22 tests in 3.095s
+Ran 33 tests in 2.166s
 OK
 ```

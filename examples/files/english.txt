@@ -1,0 +1,9 @@
+Information and coding
+
+A message can be stored in many different ways. Before sending it, the sender and the receiver need to agree on the representation of symbols. This example is an ordinary English text stored as bytes, with spaces, punctuation, and line breaks.
+
+Common symbols can be assigned short codewords, while less common symbols receive longer ones. A prefix code makes the boundaries clear: no complete codeword is the beginning of another codeword. The decoder can read bits until it reaches a complete symbol and then start the next one.
+
+The compressor reads the file twice. The first pass counts byte frequencies and builds the model. The second pass writes the encoded data. A small header carries the information needed to reconstruct the code, and a checksum helps detect accidental changes.
+
+Compression is useful only when the saving in the encoded data is larger than the cost of the header. A file that is already compressed may become larger. The most direct correctness check is to decode the archive and compare every byte with the original file.
