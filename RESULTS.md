@@ -189,7 +189,7 @@ python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 | `H` | 1.459147917027 |
 | `minimum_n` | 16 |
 | `eventual` | true |
-| `seconds` | 0.009498 |
+| `seconds` | 0.009601 |
 
 <details>
 <summary>Точные значения Pe(n) для n=1..50</summary>
@@ -264,7 +264,7 @@ python3.11 coding.py code examples/iid14.json --R 1.6 --output code14.json
 
 Для `tests/constant.json` режим `entropy` вывел `H=0.000000000000`
 
-Для `tests/iid5.json` поле `seconds=2.079904`, время с запуском процесса 2.107262 с
+Для `tests/iid5.json` поле `seconds=2.057109`, время с запуском процесса 2.084988 с
 
 ### Некорректные входы
 
@@ -337,6 +337,6 @@ python3.11 huffman.py decompress examples/files/russian.txt.zmh --output russian
 
 ```text
 python3.11 -m unittest discover -s tests -v
-Ran 33 tests in 2.008s
+Ran 33 tests in 2.106s
 OK
 ```

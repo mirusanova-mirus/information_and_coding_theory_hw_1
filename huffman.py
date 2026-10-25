@@ -194,12 +194,10 @@ def decompress(source, destination):
             if restored != size or actual_checksum != checksum:
                 raise ValueError("Повреждённый файл: не совпали длина или CRC32")
 
-# Запуск архиватора через командную строку
-# main читает параметры, выбирает путь результата и вызывает compress или decompress
-# Затем выводит путь файла, запрошенную статистику или сообщение об ошибке
+# Разбор параметров командной строки для сжатия и восстановления файлов
 
 # Начало генерации Codex
-def main():
+def parse_args():
     # Читаем режим работы, входной файл и необязательные параметры
     parser = argparse.ArgumentParser(description="Задача 1.3, вариант 14")
     parser.add_argument("command", choices=("compress", "decompress"))
@@ -207,7 +205,14 @@ def main():
     parser.add_argument("--output")
     parser.add_argument("--stats", action="store_true")
     parser.add_argument("--variant", action="version", version="s=14, k=3, M=4, L=7, d=3, q=5, epsilon=1/10000")
-    args = parser.parse_args()
+    return parser.parse_args()
+# Конец генерации Codex
+
+# Выполнение сжатия или восстановления, вывод статистики и обработка ошибок
+
+# Начало генерации Codex
+def main():
+    args = parse_args()
     try:
         source = Path(args.file)
         # Проверяем, что статистика запрошена для режима сжатия

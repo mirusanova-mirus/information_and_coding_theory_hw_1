@@ -179,13 +179,11 @@ def estimate(source, word, n, seed=14):
             rows[i] = (hits, Fraction(hits, denominator) if denominator > 0 else None)
     return first, average, rows
 
-# Интерфейс командной строки для генерации последовательности и оценки частоты появления заданного блока
-# Обработка параметров запуска, вывод результатов в JSON и диагностика ошибок
+# Разбор параметров командной строки и проверка обязательных аргументов
 
 # Начало генерации Codex
-def main() -> int:
-    # Разрешаем вывод больших целых чисел, которые появляются в точных дробях
-    sys.set_int_max_str_digits(0)
+def parse_args():
+    # Задаём режим, описание источника, длину реализации, seed и файл блока
     parser = argparse.ArgumentParser(description="Теория информации. Вариант 14")
     parser.add_argument("command", choices=("generate", "estimate"))
     parser.add_argument("file", help="описание источника в JSON")
@@ -196,7 +194,16 @@ def main() -> int:
     args = parser.parse_args()
     if args.command == "estimate" and (args.N is None or args.word is None):
         parser.error("для estimate нужны --N и --word")
+    return args
+# Конец генерации Codex
 
+# Выполнение генерации или частотной оценки, вывод JSON и обработка ошибок
+
+# Начало генерации Codex
+def main() -> int:
+    # Разрешаем вывод больших целых чисел, которые появляются в точных дробях
+    sys.set_int_max_str_digits(0)
+    args = parse_args()
     try:
         source = load_source(args.file)
         if args.command == "generate":
@@ -224,6 +231,7 @@ def main() -> int:
         return 1
     return 0
 
+# Запускаем программу при прямом запуске файла
 if __name__ == "__main__":
     raise SystemExit(main())
 # Конец генерации Codex

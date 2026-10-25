@@ -142,11 +142,11 @@ def error_table(probabilities, rate, q, nmax):
         rows.append(dict(n=n, length=length, error=error, coded=capacity, order=order, boundary=boundary))
     return rows
 
-# Интерфейс командной строки для вычисления энтропии и построения равномерного кода
-# Обработка параметров запуска, сохранение описания кода и вывод результатов в JSON
+# Разбор параметров командной строки для расчёта энтропии и построения кода
 
 # Начало генерации Codex
-def main():
+def parse_args():
+    # Задаём режим, описание источника и параметры кодирования
     parser = argparse.ArgumentParser(description="Задача 1.2, вариант 14")
     parser.add_argument("command", choices=("entropy", "code"))
     parser.add_argument("file")
@@ -156,7 +156,14 @@ def main():
     parser.add_argument("--nmax", type=int, default=50)
     parser.add_argument("--output", default="code14.json")
     parser.add_argument("--variant", action="version", version="s=14, k=3, M=4, L=7, d=3, q=5, epsilon=1/10000")
-    args = parser.parse_args()
+    return parser.parse_args()
+# Конец генерации Codex
+
+# Запуск расчётов, сохранение описания кода, вывод JSON и обработка ошибок
+
+# Начало генерации Codex
+def main():
+    args = parse_args()
     try:
         sys.set_int_max_str_digits(0)
         started = perf_counter()
@@ -196,6 +203,7 @@ def main():
         return 1
     return 0
 
+# Запускаем программу при прямом запуске файла
 if __name__ == "__main__":
     raise SystemExit(main())
 # Конец генерации Codex
