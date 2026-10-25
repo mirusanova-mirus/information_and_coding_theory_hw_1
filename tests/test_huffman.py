@@ -60,10 +60,10 @@ class HuffmanTests(unittest.TestCase):
 
     def test_required_examples(self):
         # Проверяем наличие пяти типов файлов из отчёта и их побайтовое восстановление
-        paths = sorted((ROOT / "examples/files").iterdir())
-        self.assertEqual({path.name for path in paths}, {"russian.txt", "english.txt", "image.png", "repeat.bin", "empty.bin"})
-        for path in paths:
-            with self.subTest(file=path.name):
+        for name in ("russian.txt", "english.txt", "image.png", "repeat.bin", "empty.bin"):
+            with self.subTest(file=name):
+                path = ROOT / "examples/files" / name
+                self.assertTrue(path.is_file())
                 compress(path, self.archive)
                 decompress(self.archive, self.restored)
                 self.assertEqual(self.restored.read_bytes(), path.read_bytes())

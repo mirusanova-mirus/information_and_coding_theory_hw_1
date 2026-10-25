@@ -97,9 +97,9 @@ def compress(source, destination):
                         bits -= 8
                         payload.append(buffer >> bits)
                         buffer &= (1 << bits) - 1
-                    if len(payload) >= CHUNK:
-                        output.write(payload)
-                        payload.clear()
+                # Запись полных байтов после обработки очередной порции исходного файла
+                output.write(payload)
+                payload.clear()
             # Заполнение младших разрядов последнего байта нулями
             if bits:
                 payload.append(buffer << (8 - bits))
